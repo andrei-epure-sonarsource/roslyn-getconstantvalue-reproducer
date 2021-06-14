@@ -7,3 +7,5 @@ How to reproduce:
 - in the newly spawned experimental VS instance, open the `Sample/Sample.sln` solution, and open the `Program.cs` file.
 
 Notice the "Repro" Roslyn warnings in the Error List window are the same with the ones in the comments.
+
+NOTE: the build of Sample.sln will fail because `UnknownType` is an unknown type - this is intended in order to create the reproducer.
