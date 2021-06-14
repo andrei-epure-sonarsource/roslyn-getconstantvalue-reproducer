@@ -2,11 +2,7 @@
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using System;
-using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Linq;
-using System.Threading;
 
 namespace Analyzer
 {
@@ -30,10 +26,13 @@ namespace Analyzer
                         c =>
                         {
                             ObjectCreationExpressionSyntax node = (ObjectCreationExpressionSyntax)c.Node;
-                            var firstArg = node.ArgumentList.Arguments[0].Expression;
-                            var value = c.SemanticModel.GetConstantValue(firstArg);
-                            var diagnostic = Diagnostic.Create(Rule, c.Node.GetLocation(), $"Detected value '{value.Value}' inside the argument - hasValue={value.HasValue}");
-                            c.ReportDiagnostic(diagnostic);
+                            if (node.ArgumentList.Arguments.Count == 1)
+                            {
+                                var firstArgExpression = node.ArgumentList.Arguments[0].Expression;
+                                var value = c.SemanticModel.GetConstantValue(firstArgExpression);
+                                var diagnostic = Diagnostic.Create(Rule, c.Node.GetLocation(), $"GetConstantValue hasValue='{value.HasValue}'. Argument constant value is '{value.Value}'.");
+                                c.ReportDiagnostic(diagnostic);
+                            }
                         }, SyntaxKind.ObjectCreationExpression);
                 });
         }
